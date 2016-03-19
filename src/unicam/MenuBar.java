@@ -23,15 +23,15 @@ public class MenuBar extends JMenuBar {
         JMenu menu = new JMenu("Menu");
         add(menu);
 
-        JMenuItem settings = new JMenuItem("Settings");
+        JMenuItem prefs = new JMenuItem("Preferences");
         SettingsPopup settingsPopup = new SettingsPopup();
         settingsPopup.refreshWebcams();
-        settings.addActionListener(e -> {
+        prefs.addActionListener(e -> {
             settingsPopup.refreshWebcams();
             settingsPopup.show();
         });
-        settings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
-        menu.add(settings);
+        prefs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
+        menu.add(prefs);
 
         JMenuItem maxres = new JMenuItem("Detect resolution");
         maxres.addActionListener(e -> {
@@ -55,7 +55,7 @@ public class MenuBar extends JMenuBar {
                 JOptionPane.showMessageDialog(null, "Failed to save image", "Save failure", JOptionPane.ERROR_MESSAGE);
             }
         });
-        screenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAUSE, 0));
+        screenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
         menu.add(screenshot);
 
         JMenuItem mirror = new JMenuItem("Mirror");
@@ -66,6 +66,13 @@ public class MenuBar extends JMenuBar {
         });
         mirror.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0));
         menu.add(mirror);
+
+        JMenuItem fullscreen = new JMenuItem("Fullscreen");
+        fullscreen.addActionListener(e -> {
+            Frame.getInstance().toggleFullscreen();
+        });
+        fullscreen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0));
+        menu.add(fullscreen);
 
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(e -> {
