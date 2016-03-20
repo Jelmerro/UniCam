@@ -104,7 +104,6 @@ public class Frame extends JFrame {
         try {
             byte[] imageBytes = Base64.getDecoder().decode(base64);
             Image image = ImageIO.read(new ByteArrayInputStream(imageBytes));
-            System.out.println(image);
             return image;
         } catch (IOException ex) {
             return null;

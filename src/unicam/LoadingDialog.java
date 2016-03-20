@@ -1,7 +1,6 @@
 package unicam;
 
 import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamLockException;
 import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -80,7 +79,7 @@ public class LoadingDialog extends JDialog {
                 panel.setFPSDisplayed(true);
                 Frame.getInstance().setPanel(panel);
                 panel.updateUI();
-            } catch (WebcamLockException ex) {
+            } catch (Exception ex) {
                 addToLog(ex.toString());
                 error = true;
             }

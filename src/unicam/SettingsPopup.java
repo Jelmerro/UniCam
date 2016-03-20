@@ -86,9 +86,13 @@ public class SettingsPopup extends JPanel {
     }
 
     public void refreshWebcams() {
+        Webcam selectedWebcam = getCurrentWebcam();
         webcamModel.removeAllElements();
         for (Webcam webcam : Webcam.getWebcams()) {
             webcamModel.addElement(webcam);
+        }
+        if (selectedWebcam != null) {
+            webcamModel.setSelectedItem(selectedWebcam);
         }
     }
 

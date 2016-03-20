@@ -78,7 +78,7 @@ public class MenuBar extends JMenuBar {
         exit.addActionListener(e -> {
             System.exit(0);
         });
-        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
+        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         menu.add(exit);
     }
 }
