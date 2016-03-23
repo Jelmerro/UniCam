@@ -46,13 +46,17 @@ public class MenuBar extends JMenuBar {
 
         JMenuItem screenshot = new JMenuItem("Snapshot");
         screenshot.addActionListener(e -> {
-            try {
-                BufferedImage image = settingsPopup.getCurrentWebcam().getImage();
-                if (image != null) {
-                    ImageIO.write(image, "png", new File(new Date().toString().replace(":", ".") + ".png"));
+            if (settingsPopup.getCurrentWebcam() != null) {
+                try {
+                    BufferedImage image = settingsPopup.getCurrentWebcam().getImage();
+                    if (image != null) {
+                        String date = new Date().toString().replace(":", ".") + ".png";
+                        ImageIO.write(image, "png", new File(date));
+                        Frame.getInstance().drawMessage("Saved screenshot: " + date);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Failed to save image", "Save failure", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Failed to save image", "Save failure", JOptionPane.ERROR_MESSAGE);
             }
         });
         screenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));

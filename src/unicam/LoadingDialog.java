@@ -86,6 +86,10 @@ public class LoadingDialog extends JDialog {
             if (!error) {
                 dispose();
                 addToLog("Done");
+                if (!res.equals(Frame.getInstance().getPanel().getPreferredSize()) && !(res.getHeight() == 10000 && res.getWidth() == 10000)) {
+                    Dimension panelSize = Frame.getInstance().getPanel().getPreferredSize();
+                    Frame.getInstance().drawMessage("Different resolution: " + (int) panelSize.getWidth() + "x" + (int) panelSize.getHeight() + " instead of " + (int) res.getWidth() + "x" + (int) res.getHeight());
+                }
             } else {
                 addToLog("You can close this window once you're done here");
                 setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

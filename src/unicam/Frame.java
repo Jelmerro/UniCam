@@ -2,6 +2,7 @@ package unicam;
 
 import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -9,8 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.font.TextAttribute;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.AttributedString;
 import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -98,6 +101,21 @@ public class Frame extends JFrame {
         }
         setVisible(true);
         fullscreen = !fullscreen;
+    }
+
+    public void drawMessage(String message) {
+        AttributedString aS = new AttributedString(message);
+        aS.addAttribute(TextAttribute.FOREGROUND, Color.white);
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                for (int i = 0; i < 10000; i++) {
+                    panel.getGraphics().drawString(aS.getIterator(), 20, 20);
+                }
+            }
+        }, 0);
     }
 
     public Image Base64ToImage(String base64) {
