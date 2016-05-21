@@ -19,12 +19,14 @@ import javax.swing.KeyStroke;
  */
 public class MenuBar extends JMenuBar {
 
+    private SettingsPopup settingsPopup;
+
     public MenuBar() {
         JMenu menu = new JMenu("Menu");
         add(menu);
 
         JMenuItem prefs = new JMenuItem("Preferences");
-        SettingsPopup settingsPopup = new SettingsPopup();
+        settingsPopup = new SettingsPopup();
         settingsPopup.refreshWebcams();
         prefs.addActionListener(e -> {
             settingsPopup.refreshWebcams();
@@ -71,6 +73,13 @@ public class MenuBar extends JMenuBar {
         mirror.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0));
         menu.add(mirror);
 
+        JMenuItem clipboard = new JMenuItem("Copy to clipboard");
+        clipboard.addActionListener(e -> {
+            Frame.getInstance().imageToClipboard();
+        });
+        clipboard.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0));
+        menu.add(clipboard);
+
         JMenuItem fullscreen = new JMenuItem("Fullscreen");
         fullscreen.addActionListener(e -> {
             Frame.getInstance().toggleFullscreen();
@@ -84,5 +93,9 @@ public class MenuBar extends JMenuBar {
         });
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         menu.add(exit);
+    }
+
+    public SettingsPopup getSettingsPopup() {
+        return settingsPopup;
     }
 }

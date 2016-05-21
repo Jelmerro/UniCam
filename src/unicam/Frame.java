@@ -6,19 +6,23 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.AttributedString;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,6 +34,9 @@ public class Frame extends JFrame {
     private static WebcamPanel panel;
     private static boolean fullscreen;
     private static boolean clicked;
+    private static long timeClicked;
+    private static Date pressedTime;
+    private static MenuBar menuBar;
 
     public static Frame getInstance() {
         if (frame == null) {
@@ -59,10 +66,20 @@ public class Frame extends JFrame {
                             }
                         }, 300);
                     }
+                    pressedTime = new Date();
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    timeClicked = new Date().getTime() - pressedTime.getTime();
+                    if (timeClicked > 1000) {
+                        Frame.getInstance().imageToClipboard();
+                    }
                 }
             });
             frame.setLayout(new BorderLayout());
-            frame.setJMenuBar(new MenuBar());
+            menuBar = new MenuBar();
+            frame.setJMenuBar(menuBar);
             frame.pack();
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             frame.setSize(new Dimension(screen.width / 2, (int) (screen.height / 1.5)));
@@ -103,6 +120,22 @@ public class Frame extends JFrame {
         fullscreen = !fullscreen;
     }
 
+    public void imageToClipboard() {
+        try {
+            BufferedImage bufferedImage = menuBar.getSettingsPopup().getCurrentWebcam().getImage();
+            if (bufferedImage != null) {
+                TransferableImage image = new TransferableImage(bufferedImage);
+                Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+                c.setContents(image, null);
+                Frame.getInstance().drawMessage("Copied image to clipboard");
+            }
+        } catch (NullPointerException ex) {
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Image could not be copied", "Clipboard failure", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public void drawMessage(String message) {
         AttributedString aS = new AttributedString(message);
         aS.addAttribute(TextAttribute.FOREGROUND, Color.white);
@@ -112,7 +145,11 @@ public class Frame extends JFrame {
             @Override
             public void run() {
                 for (int i = 0; i < 10000; i++) {
-                    panel.getGraphics().drawString(aS.getIterator(), 20, 20);
+                    try {
+                        panel.getGraphics().drawString(aS.getIterator(), 20, 20);
+                    } catch (NullPointerException ex) {
+
+                    }
                 }
             }
         }, 0);
