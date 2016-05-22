@@ -5,6 +5,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 /**
@@ -63,37 +64,43 @@ public class LoadingDialog extends JDialog {
                 addToLog(ex.toString());
                 error = true;
             }
-            addToLog("Setting resolution");
-            try {
-                Dimension[] array = {res};
-                selectedWebcam.setCustomViewSizes(array);
-                selectedWebcam.setViewSize(res);
-            } catch (Exception ex) {
-                addToLog(ex.toString());
-                error = true;
-            }
-            addToLog("Creating webcam panel");
-            try {
-                WebcamPanel panel = new WebcamPanel(selectedWebcam);
-                addToLog("Building panel");
-                panel.setFPSDisplayed(true);
-                Frame.getInstance().setPanel(panel);
-                panel.updateUI();
-            } catch (Exception ex) {
-                addToLog(ex.toString());
-                error = true;
-            }
-            if (!error) {
-                dispose();
-                addToLog("Done");
-                if (!res.equals(Frame.getInstance().getPanel().getPreferredSize()) && !(res.getHeight() == 10000 && res.getWidth() == 10000)) {
-                    Dimension panelSize = Frame.getInstance().getPanel().getPreferredSize();
-                    Frame.getInstance().drawMessage("Different resolution: " + (int) panelSize.getWidth() + "x" + (int) panelSize.getHeight() + " instead of " + (int) res.getWidth() + "x" + (int) res.getHeight());
+            if (selectedWebcam != null) {
+                addToLog("Setting resolution");
+                try {
+                    Dimension[] array = {res};
+                    selectedWebcam.setCustomViewSizes(array);
+                    selectedWebcam.setViewSize(res);
+                } catch (Exception ex) {
+                    addToLog(ex.toString());
+                    error = true;
+                }
+                addToLog("Creating webcam panel");
+                try {
+                    WebcamPanel panel = new WebcamPanel(selectedWebcam);
+                    addToLog("Building panel");
+                    panel.setFPSDisplayed(true);
+                    Frame.getInstance().setPanel(panel);
+                    panel.updateUI();
+                } catch (Exception ex) {
+                    addToLog(ex.toString());
+                    error = true;
+                }
+                if (!error) {
+                    dispose();
+                    addToLog("Done");
+                    if (!res.equals(Frame.getInstance().getPanel().getPreferredSize()) && !(res.getHeight() == 10000 && res.getWidth() == 10000)) {
+                        Dimension panelSize = Frame.getInstance().getPanel().getPreferredSize();
+                        Frame.getInstance().drawMessage("Different resolution: " + (int) panelSize.getWidth() + "x" + (int) panelSize.getHeight() + " instead of " + (int) res.getWidth() + "x" + (int) res.getHeight());
+                    }
+                } else {
+                    addToLog("You can close this window once you're done here");
+                    setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    setFocusableWindowState(true);
                 }
             } else {
-                addToLog("You can close this window once you're done here");
-                setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                setFocusableWindowState(true);
+                dispose();
+                addToLog("No webcam available");
+                JOptionPane.showMessageDialog(null, "No usable webcam could be found", "Webcam warning", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

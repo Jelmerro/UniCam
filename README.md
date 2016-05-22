@@ -10,6 +10,7 @@ Using sarxos webcam capture API.
 * Mirror the webcam view
 * Go fullscreen
 * Take screenshots
+* Copy the image to your clipboard
 * Simple one-key shortcuts
 * Written in blazingly fast Java :neutral_face:
 

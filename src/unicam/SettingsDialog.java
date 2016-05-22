@@ -17,24 +17,28 @@ import javax.swing.JTextField;
  *
  * @author Jelmerro
  */
-public class SettingsPopup extends JPanel {
+public class SettingsDialog extends JPanel {
 
     private final DefaultComboBoxModel webcamModel;
     private final JComboBox webcamBox;
     private final JTextField XField;
     private final JTextField YField;
 
-    public SettingsPopup() {
+    public SettingsDialog() {
         webcamModel = new DefaultComboBoxModel();
         webcamBox = new JComboBox(webcamModel);
+        webcamBox.setMaximumRowCount(10);
         Box resBox = new Box(BoxLayout.X_AXIS);
-        XField = new JTextField();
-        YField = new JTextField();
+        XField = new JTextField("" + 0);
+        YField = new JTextField("" + 0);
         webcamBox.addActionListener(e -> {
             Dimension d = getResolution();
             if (d != null) {
                 XField.setText("" + d.width);
                 YField.setText("" + d.height);
+            } else {
+                XField.setText("" + 0);
+                YField.setText("" + 0);
             }
         });
         Button doubleButton = new Button("2X");

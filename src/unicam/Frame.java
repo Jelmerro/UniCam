@@ -4,6 +4,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.AttributedString;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Timer;
@@ -37,10 +39,12 @@ public class Frame extends JFrame {
     private static long timeClicked;
     private static Date pressedTime;
     private static MenuBar menuBar;
+    private static ArrayList<String> messages;
 
     public static Frame getInstance() {
         if (frame == null) {
             fullscreen = false;
+            messages = new ArrayList<>();
             frame = new Frame("UniCam");
             frame.addWindowListener(new WindowAdapter() {
                 @Override
@@ -122,12 +126,12 @@ public class Frame extends JFrame {
 
     public void imageToClipboard() {
         try {
-            BufferedImage bufferedImage = menuBar.getSettingsPopup().getCurrentWebcam().getImage();
+            BufferedImage bufferedImage = menuBar.getSettingsDialog().getCurrentWebcam().getImage();
             if (bufferedImage != null) {
                 TransferableImage image = new TransferableImage(bufferedImage);
                 Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
                 c.setContents(image, null);
-                Frame.getInstance().drawMessage("Copied image to clipboard");
+                Frame.getInstance().drawMessage("Copied " + new Date().toString().replace(":", ".") + " to clipboard");
             }
         } catch (NullPointerException ex) {
             
@@ -137,20 +141,32 @@ public class Frame extends JFrame {
     }
 
     public void drawMessage(String message) {
-        AttributedString aS = new AttributedString(message);
-        aS.addAttribute(TextAttribute.FOREGROUND, Color.white);
+        AttributedString frontString = new AttributedString(message);
+        frontString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE);
+        frontString.addAttribute(TextAttribute.FONT, new Font("Arial", Font.PLAIN , 12));
+        AttributedString shadowString = new AttributedString(message);
+        shadowString.addAttribute(TextAttribute.FOREGROUND, Color.BLACK);
+        shadowString.addAttribute(TextAttribute.FONT, new Font("Arial", Font.PLAIN , 12));
         Timer t = new Timer();
         t.schedule(new TimerTask() {
 
             @Override
             public void run() {
+                messages.add(message);
                 for (int i = 0; i < 10000; i++) {
                     try {
-                        panel.getGraphics().drawString(aS.getIterator(), 20, 20);
+                        panel.getGraphics().drawString(shadowString.getIterator(), 20, (messages.indexOf(message) + 1) * 20);
+                        panel.getGraphics().drawString(frontString.getIterator(), 20 - 1, (messages.indexOf(message) + 1) * 20 - 1);
                     } catch (NullPointerException ex) {
 
                     }
                 }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    
+                }
+                messages.remove(message);
             }
         }, 0);
     }
