@@ -1,34 +1,48 @@
 package unicam;
 
 import com.github.sarxos.webcam.Webcam;
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 /**
+ * Dialog where you configure the settings
  *
  * @author Jelmerro
  */
-public class SettingsDialog extends JPanel {
+public class SettingsDialog extends JDialog {
 
     private final DefaultComboBoxModel webcamModel;
     private final JComboBox webcamBox;
     private final JTextField XField;
     private final JTextField YField;
 
+    /**
+     * Creates the SettingsDialog
+     */
     public SettingsDialog() {
+        //Call super method
+        super(Frame.getInstance(), "Preferences", ModalityType.APPLICATION_MODAL);
+        //Set properties
+        setResizable(false);
+        getRootPane().setBorder(new EmptyBorder(20, 20, 20, 20));
+        setBounds(40, 40, 40, 40);
+        setLayout(new GridLayout(0, 2, 10, 10));
+        setSize(new Dimension(600, 200));
+        setPreferredSize(new Dimension(600, 200));
+        //Set items
         webcamModel = new DefaultComboBoxModel();
         webcamBox = new JComboBox(webcamModel);
         webcamBox.setMaximumRowCount(10);
-        Box resBox = new Box(BoxLayout.X_AXIS);
         XField = new JTextField("" + 0);
         YField = new JTextField("" + 0);
         webcamBox.addActionListener(e -> {
@@ -41,7 +55,8 @@ public class SettingsDialog extends JPanel {
                 YField.setText("" + 0);
             }
         });
-        Button doubleButton = new Button("2X");
+        JButton doubleButton = new JButton("2X");
+        //Doubles the input fields
         doubleButton.addActionListener(e -> {
             try {
                 XField.setText("" + (Integer.parseInt(XField.getText()) * 2));
@@ -50,7 +65,8 @@ public class SettingsDialog extends JPanel {
 
             }
         });
-        Button halfButton = new Button("/2");
+        JButton halfButton = new JButton("/2");
+        //Halves the input fields
         halfButton.addActionListener(e -> {
             try {
                 XField.setText("" + (Integer.parseInt(XField.getText()) / 2));
@@ -59,36 +75,43 @@ public class SettingsDialog extends JPanel {
 
             }
         });
-        resBox.add(doubleButton);
-        resBox.add(XField);
-        resBox.add(YField);
-        resBox.add(halfButton);
+        JButton applyButton = new JButton("Apply");
+        //Applies the resolution for the selected webcam
+        //This will start the same process as detecting the resolution
+        applyButton.addActionListener(e -> {
+            setVisible(false);
+            //If the input fields contain no only numbers, show a warning and reshow the dialog
+            try {
+                Dimension dimension = new Dimension(Integer.parseInt(XField.getText()), Integer.parseInt(YField.getText()));
+                LoadingDialog loadingDialog = new LoadingDialog();
+                loadingDialog.load(webcamBox.getSelectedItem(), dimension);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Please only use numbers", "Number warning", JOptionPane.WARNING_MESSAGE);
+                setVisible(true);
+            }
+        });
+        JButton cancelButton = new JButton("Cancel");
+        //Hides the dialog
+        cancelButton.addActionListener(e -> {
+            setVisible(false);
+        });
+        //Add items
         add(new JLabel("Webcam:"));
         add(webcamBox);
         add(new JLabel("Resolution:"));
-        add(resBox);
-        setLayout(new GridLayout(2, 2, 20, 20));
+        Box box = new Box(BoxLayout.X_AXIS);
+        box.add(doubleButton);
+        box.add(XField);
+        box.add(YField);
+        box.add(halfButton);
+        add(box);
+        add(applyButton);
+        add(cancelButton);
     }
 
-    @Override
-    public void show() {
-        boolean loop = true;
-        while (loop) {
-            loop = false;
-            int result = JOptionPane.showConfirmDialog(null, this, "UniCam", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (result == JOptionPane.OK_OPTION) {
-                try {
-                    Dimension dimension = new Dimension(Integer.parseInt(XField.getText()), Integer.parseInt(YField.getText()));
-                    LoadingDialog loadingDialog = new LoadingDialog();
-                    loadingDialog.load(webcamBox.getSelectedItem(), dimension);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "Please only use numbers", "Number warning", JOptionPane.WARNING_MESSAGE);
-                    loop = true;
-                }
-            }
-        }
-    }
-
+    /**
+     * Refreshes the list of webcams
+     */
     public void refreshWebcams() {
         Webcam selectedWebcam = getCurrentWebcam();
         webcamModel.removeAllElements();
@@ -100,10 +123,20 @@ public class SettingsDialog extends JPanel {
         }
     }
 
+    /**
+     * Returns the Webcam that is currently selected
+     *
+     * @return webcam Webcam
+     */
     public Webcam getCurrentWebcam() {
         return (Webcam) webcamBox.getSelectedItem();
     }
 
+    /**
+     * Returns the current resolution, it returns 640x480 when there is no panel
+     *
+     * @return resolution Dimension
+     */
     private Dimension getResolution() {
         if (Frame.getInstance().getPanel() != null) {
             return Frame.getInstance().getPanel().getPreferredSize();

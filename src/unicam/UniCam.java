@@ -5,11 +5,17 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 /**
+ * Main class of UniCam starts AntiSleep and shows the Frame
  *
  * @author Jelmerro
  */
 public class UniCam {
 
+    /**
+     * Start of the application
+     *
+     * @param args String[]
+     */
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
