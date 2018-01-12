@@ -1,4 +1,4 @@
-package unicam;
+package com.github.jelmerro.unicam;
 
 import java.awt.AWTException;
 import javax.swing.JOptionPane;

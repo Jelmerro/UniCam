@@ -1,4 +1,4 @@
-package unicam;
+package com.github.jelmerro.unicam;
 
 import com.github.sarxos.webcam.Webcam;
 import java.awt.Dimension;

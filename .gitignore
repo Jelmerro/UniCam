@@ -4,5 +4,12 @@ build.xml
 dist/
 nbproject/
 manifest.mf
+// IntelliJ
+*.iml
+.idea/
 //Windows
 Thumbs.db
+//macOS
+**/.DS_Store
+//Maven
+target/
