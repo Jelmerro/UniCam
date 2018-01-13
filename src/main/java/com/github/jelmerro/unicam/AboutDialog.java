@@ -41,7 +41,7 @@ public class AboutDialog extends JDialog {
         setSize(350, 240);
         //Add items
         box = new Box(BoxLayout.Y_AXIS);
-        addLabelToBox("UniCam 1.0.0", 20, null);
+        addLabelToBox("UniCam 1.1.0", 20, null);
         addLabelToBox("A cross-platform open-source webcam viewer", 12, null);
         addLabelToBox("Created by Jelmerro", 16, null);
         addLabelToBox("MIT License", 16, null);
