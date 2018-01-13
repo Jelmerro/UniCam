@@ -1,4 +1,4 @@
-package unicam;
+package com.github.jelmerro.unicam;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -56,7 +56,7 @@ public class AboutDialog extends JDialog {
      * @param size int
      * @param url String
      */
-    private void addLabelToBox(String text, int size, String url) {
+    private void addLabelToBox(String text, int size, final String url) {
         JLabel label = new JLabel(text);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setFont(new Font("Arial", Font.PLAIN, size));
